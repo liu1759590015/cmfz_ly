@@ -1,5 +1,6 @@
 package com.baizhi.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "ablum")
+@Table(name = "album")
 public class Album {
     @Id
     @KeySql(useGeneratedKeys = true)
@@ -25,9 +26,10 @@ public class Album {
     private Double score;
     private String author;
     //播音人
-    @Column(name = "boardcast")
+    @Column(name = "board_cast")
     private String boardCast;
+    @JSONField(format = "YYYY-MM-dd HH:mm:ss")
     private Date publishDate;
-    private String bref;
-    private List<Chapter> chapters;
+    private String brief;
+    private List<Chapter> children;
 }

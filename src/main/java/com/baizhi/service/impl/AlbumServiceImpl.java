@@ -19,4 +19,9 @@ public class AlbumServiceImpl implements AlbumService {
     public List<Album> queryAll() {
         return albumMapper.queryAll();
     }
+
+    @Override
+    public void insert(Album album) {
+        albumMapper.insert(album);
+    }
 }

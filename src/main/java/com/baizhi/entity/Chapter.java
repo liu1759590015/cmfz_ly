@@ -1,5 +1,6 @@
 package com.baizhi.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,10 +18,12 @@ public class Chapter {
     @Id
     private String id;
     private String title;
-    private Double size;
+    private String size;
     //时长
-    private Double duration;
+    private String duration;
+    @JSONField(format = "YYYY-MM-dd HH:mm:ss")
     private Date publishDate;
+    private String radioPath;
     @Transient
     private Album album;
 }
