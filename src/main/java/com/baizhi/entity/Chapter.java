@@ -3,24 +3,24 @@ package com.baizhi.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import tk.mybatis.mapper.annotation.KeySql;
 
-import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Chapter {
+    @GeneratedValue(generator = "UUID")
     @Id
-    @KeySql(useGeneratedKeys = true)
-    private Integer id;
+    private String id;
     private String title;
     private Double size;
     //时长
     private Double duration;
-    @Column(name = "publish_date")
     private Date publishDate;
-    private Ablum ablum;
+    @Transient
+    private Album album;
 }
