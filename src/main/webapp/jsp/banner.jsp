@@ -29,13 +29,15 @@
             text: "删除",
             handler: function () {
                 //alert('帮助按钮')
-                $('#dg_banner').edatagrid('destroyRow');
-                //$('#dg_banner').edatagrid('load');
-                /*var selectedRow=$("#dg_banner").datagrid("getSelected");
-                if(selectedRow==null){
-                    $.messager.alert('提示消息','请选择数据');
+                var selectedRow = $("#dg_banner").datagrid("getSelected");
+                if (selectedRow == null) {
+                    $.messager.alert('提示消息', '请选择数据');
                     return;
                 }
+                $('#dg_banner').edatagrid('destroyRow');
+                //$('#dg_banner').edatagrid('load');
+                /*
+
                 $.ajax({
                     url:'
                 ${pageContext.request.contextPath}/banner/deleteBanner',
@@ -59,6 +61,12 @@
             handler: function () {
                 //alert('帮助按钮')
                 $('#dg_banner').edatagrid('saveRow');
+            }
+        }, '-', {
+            iconCls: 'icon-redo',
+            text: "导出",
+            handler: function () {
+                location.href = "${pageContext.request.contextPath}/banner/deriveExcel";
             }
         }];
         $("#dg_banner").edatagrid({
@@ -189,6 +197,7 @@
         </div>
         <input class="easyui-filebox" style="width:150px" name="file" id="img" data-options="buttonText:'选择文件'"/>
         <div>
+
             <img src="" id="bannerImg" width="50px"/>
         </div>
     </form>

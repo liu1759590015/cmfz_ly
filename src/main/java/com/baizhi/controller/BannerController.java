@@ -2,6 +2,7 @@ package com.baizhi.controller;
 
 import com.baizhi.entity.Banner;
 import com.baizhi.service.BannerService;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,8 +10,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -92,5 +96,31 @@ public class BannerController {
             map.put("isUpdate", false);
         }
         return map;
+    }
+
+    @RequestMapping("deriveExcel")
+    public void deriveExcel(HttpServletResponse response) {
+        Workbook workbook = bannerService.deriveExcel();
+        //System.out.println(wb);
+        OutputStream out = null;
+        try {
+            out = response.getOutputStream();
+            response.setContentType("application/ms-excel;charset=UTF-8");
+            response.setHeader("Content-Disposition", "attachment;filename=".concat(String.valueOf(URLEncoder.encode("导出文件.xls", "UTF-8"))));
+            workbook.write(out);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        /*try {
+            wb.write(new FileOutputStream(new File("D:/bxy.xls")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 }

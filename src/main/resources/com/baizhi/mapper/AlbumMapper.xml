@@ -20,6 +20,7 @@
             <result column="duration" property="duration"/>
             <result column="publish_date" property="publishDate"/>
             <result column="radio_path" property="radioPath"/>
+            <result column="album_id" property="albumId"/>
             <association property="album" javaType="Album"></association>
         </collection>
     </resultMap>
@@ -29,7 +30,9 @@
                t2.title title2,
                t2.size,
                t2.duration,
-               t2.publish_date
+               t2.publish_date,
+               t2.radio_path,
+               t2.album_id
         from album t1
                  left JOIN chapter t2
                            on t1.id = t2.album_id

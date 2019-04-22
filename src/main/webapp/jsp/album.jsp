@@ -6,7 +6,7 @@
             text: "查看详情",
             handler: function () {
                 //alert('编辑按钮')
-                var selectedRow = $('#tt_album').datagrid("getSelected");
+                var selectedRow = $('#tt_album').treegrid("getSelected");
                 if (selectedRow == null) {
                     $.messager.alert('提示消息', '请选择要查看项');
                     return;
@@ -34,9 +34,14 @@
                 $("#addChapter").dialog('open');
                 $.ajax({
                     type: "get",
-                    url: "",
-                    success: function () {
-
+                    url: "${pageContext.request.contextPath}/album/selectAlbum",
+                    dataType: "json",
+                    success: function (data) {
+                        var html = "";
+                        $.each(data, function (index1, first) {
+                            html += "<option value='" + first.id + "'>" + first.title + "</option>";
+                        })
+                        $("#selectAlbumName").append(html);
                     }
                 })
             }
@@ -44,7 +49,44 @@
             iconCls: 'icon-undo',
             text: "下载",
             handler: function () {
+                var selectedRow = $('#tt_album').treegrid("getSelected");
+                console.log(selectedRow);
+                if (selectedRow != null) {
+                    if (selectedRow.size == null) {
+                        $.messager.alert('提示消息', "请选择要下载的章节");
+                        return;
+                    }
+                } else {
+                    $.messager.alert('提示消息', "请选择要下载的章节");
+                    return;
+                }
 
+                location.href = "${pageContext.request.contextPath}/chapter/download?radioPath=" + selectedRow.radioPath + "&title=" + selectedRow.title;
+            }
+        }, '-', {
+            iconCls: 'icon-play',
+            text: "播放音频",
+            handler: function () {
+                var selectedRow = $('#tt_album').treegrid("getSelected");
+                //console.log(selectedRow);
+                if (selectedRow != null) {
+                    if (selectedRow.size == null) {
+                        $.messager.alert('提示消息', "请选择章节");
+                        return;
+                    }
+                } else {
+                    $.messager.alert('提示消息', "请选择章节");
+                    return;
+                }
+                $("#radio").prop("src", "${pageContext.request.contextPath}" + selectedRow.radioPath);
+                $("#music").dialog("open");
+                console.log($("#radio").prop("src"));
+            }
+        }, '-', {
+            iconCls: 'icon-redo',
+            text: "导出",
+            handler: function () {
+                location.href = "${pageContext.request.contextPath}/album/deriveAlbum"
             }
         }];
         //展示数据
@@ -77,13 +119,37 @@
             success: function (data) {
                 data = JSON.parse(data);
                 if (data.isInsert) {
+                    $("#tt_album").treegrid("reload");
                     $("#addAlbum").dialog('close');
-                    $("#tt_album").datagrid("reload");
-                    $("#title1").val("");
+                    /*$("#title1").val("");
                     $("#author1").val("");
                     $("#boardCast1").val("");
                     $("#brief1").val("");
-                    $("#path").filebox("clear");
+                    $("#path").filebox("clear");*/
+                    $("#addChapterForm").form("reset");
+                } else {
+                    console.log("添加失败");
+                }
+            }
+        });
+    }
+
+    //添加章节
+    function toAddChapter() {
+        // call 'submit' method of form plugin to submit the form
+        $('#addChapterForm').form('submit', {
+            url: '${pageContext.request.contextPath}/chapter/addChapter',
+            onSubmit: function () {
+                // do some check
+                // return false to prevent submit;
+            },
+            success: function (data) {
+                data = JSON.parse(data);
+                if (data.isInsert) {
+                    $("#tt_album").treegrid("reload");
+                    $("#addChapter").dialog("close");
+                    $("#title3").val("");
+                    $("#radioPath").filebox("clear");
                 } else {
                     console.log("添加失败");
                 }
@@ -99,7 +165,7 @@
                 buttons:[{
                     text:'关闭',
                     handler:function(){
-                        $('#select').dialog('close');
+                        $('#selectAlbum').dialog('close');
                     }
                 }]">
     <form id="albumForm" method="post">
@@ -139,7 +205,7 @@
                 buttons:[{
                     text:'关闭',
                     handler:function(){
-                        $('#select').dialog('close');
+                        $('#selectChapter').dialog('close');
                     }
                 }]">
     <form id="chapterForm" method="post">
@@ -174,7 +240,7 @@
                 },{
                     text:'关闭',
                     handler:function(){
-                        $('#select').dialog('close');
+                        $('#selectaddAlbum').dialog('close');
                     }
                 }]">
     <form id="addAlbumForm" method="post" enctype="multipart/form-data">
@@ -204,12 +270,12 @@
                 buttons:[{
                     text:'保存',
                     handler:function(){
-                        toAddAlbum();
+                        toAddChapter();
                     }
                 },{
                     text:'关闭',
                     handler:function(){
-                        $('#select').dialog('close');
+                        $('#addChapter').dialog('close');
                     }
                 }]">
     <form id="addChapterForm" method="post" enctype="multipart/form-data">
@@ -218,11 +284,18 @@
             <input id="title3" class="easyui-validatebox" type="text" name="title" data-options="required:true"/>
         </div>
         <div>
-            <select>
-                <option></option>
+            <select name="albumId" id="selectAlbumName">
+
             </select>
         </div>
-        <input class="easyui-filebox" style="width:150px" name="file" data-options="buttonText:'选择音频文件'" id="path"/>
+        <input class="easyui-filebox" style="width:150px" name="file" data-options="buttonText:'选择音频文件'"
+               id="radioPath"/>
     </form>
 </div>
+<div id="music" class="easyui-dialog" title="播放专辑章节" style="width:320px;height:80px;"
+     data-options="iconCls:'icon-add',resizable:true,modal:true,closed:true">
+    <audio src="" controls="controls" type="audio/wav" autoplay="autoplay" width="30px" id="radio"></audio>
+    <div>
+
+        <%--<embed src="" loop=true  autostart=true  name=bgss  width="960" height="300" id="radio"/>--%>
 

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.baizhi.mapper.StatisticsMapper">
+    <select id="selectByDate" resultType="int">
+        select count(*)
+        from user
+        where DATEDIFF(now(), create_date) &lt; #{day}
+    </select>
+    <select id="selectBySex" resultType="China">
+        select count(*) value,province name
+        from user
+        where sex=#{sex}
+        GROUP BY province
+    </select>
+</mapper>

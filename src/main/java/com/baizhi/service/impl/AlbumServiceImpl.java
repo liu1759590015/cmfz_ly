@@ -24,4 +24,19 @@ public class AlbumServiceImpl implements AlbumService {
     public void insert(Album album) {
         albumMapper.insert(album);
     }
+
+    @Override
+    public List<Album> selectAll() {
+        return albumMapper.selectAll();
+    }
+
+    @Override
+    public Album selectById(int id) {
+        return albumMapper.selectByPrimaryKey(id);
+    }
+
+    @Override
+    public void update(Album album) {
+        albumMapper.updateByPrimaryKeySelective(album);
+    }
 }
